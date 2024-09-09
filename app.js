@@ -1,74 +1,74 @@
 const express = require('express');
 const yup = require('yup');
-//create application - server
+// Створення сервера
 const app = express();
 const PORT = 3000;
 
 const users = [];
+app.use(express.json());
 
-//ROUTING
-//app.get()
-app.get('/',
-    (req, res) => {
-        res.send('hi');
-    });  
-//patern: change de responsability
-//app.post()
-//app.put()
-//app.delete()
-
-
-//ROUTING FOR CREATE USER
-// 1 parse            const parse = (req, res, next)=>{}
-// 2 validation       const validate = (req,res,next) =>{}
-// 3 save user
-// 4 prepare user
-// 5 send user         const create =(req,res,next) ={}
-
-
-// 1 PARSE
-// const parse = (req, res, next)=> {} igual a
-const parse = express.json();//(string --> json-->object)
-// Парсинг JSON (перетворення тексту на об'єкт)   ---> next
-// 2 VALIDATION  --npm install yup ($ npm i yup)
-const validate = async(req, res, next) => {
-    console.log(typeof req.body);// body=object --next -----> // Перевірка типу даних тіла запиту
-    const validationShemaUser = yup.object({
+// Валідація за допомогою yup
+const validate = async (req, res, next) => {
+    console.log(typeof req.body); // Перевірка типу даних тіла запиту
+    const validationSchemaUser = yup.object({
         name: yup.string().trim().required(),
         email: yup.string().trim().required().email(),
         password: yup.string().trim().required(),
         is_male: yup.boolean(),
     });
-    try {// Валідація даних і присвоєння валідованого об'єкта назад до req.body
-        req.body = await validationShemaUser.validate(req.body);
+    try {
+        // Валідація даних і присвоєння валідованого об'єкта назад до req.body
+        req.body = await validationSchemaUser.validate(req.body);
         next();
     } catch (error) {
-        //res.send(error.message);    // Відправка відповіді з кодом 400 та повідомленням про помилку
+        // Відправка відповіді з кодом 400 та повідомленням про помилку
         res.status(400).send(error.errors.join(', '));
     }
 };
-// 3 save user // 4 prepare user //5 send user
+
 // Створення користувача  
 let count = 0;  
 const create = (req, res) => {
     try {
-        throw new Error("db not avalable");
-      const user = req.body;// 3 save user
-      user.id = count++;
-      delete user.password;
-      user.createdAt = new Date();
-      users.push(user);
-      console.log(users);
-      res.status(201).send(user);
-  } catch (error) {
-   res.status(400).send(error.message) 
-  }
+        // throw new Error("db not available"); // Розкоментуйте, якщо потрібно перевірити обробку помилок
+        const user = req.body; // Збереження користувача
+        user.id = count++;
+        delete user.password; // Видалення пароля перед збереженням
+        user.createdAt = new Date();
+        users.push(user);
+        console.log(users);
+        res.status(201).send(user);
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
 };
+
+// Оновлення користувача
+const update = (req, res) => {
+    try {
+        // Логіка оновлення
+        res.status(200).send('User updated successfully!');
+    } catch (error) {
+        res.status(404).send(error.message);
+    }
+};
+
+// Видалення користувача
+const deleteUser = (req, res) => {
+    try {
+        // Логіка видалення
+        res.status(200).send('User deleted successfully!');
+    } catch (error) {
+        res.status(404).send(error.message);
+    }
+};
+
 // Додавання маршруту з обробниками
-app.post('/users', parse, validate, create);
-app.put('/users/1', parse, validate, create);
+app.post('/users', validate, create);
+app.put('/users/:id', validate, update); // Використання параметра маршруту :id
+app.delete('/users/:id', deleteUser); // Використання параметра маршруту :id
+
 // Запуск сервера
 app.listen(PORT, () => {
-    console.log('app start at port '+PORT);
+    console.log('App started at port ' + PORT);
 });
-
