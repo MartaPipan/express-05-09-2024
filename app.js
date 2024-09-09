@@ -1,5 +1,5 @@
 const express = require('express');
-const { validate } = require('./middlewares/validate/mw');
+const validate = require('./middlewares/validate/mw');
 //const yup = require('yup') in middleware now
 // Створення сервера
 const app = express();

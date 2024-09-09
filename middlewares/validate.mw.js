@@ -1,6 +1,6 @@
 const yup = require('yup');
 
-module.exports.validate = validate = async (req, res, next) => {
+module.exports = validate = async (req, res, next) => {
     console.log(typeof req.body); // Перевірка типу даних тіла запиту
     const validationSchemaUser = yup.object({
         name: yup.string().trim().required(),
