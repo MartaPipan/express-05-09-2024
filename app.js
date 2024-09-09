@@ -5,13 +5,22 @@ const PORT = 3000;
 
 //ROUTING
 //app.get()
-app.get('/', (req, res) => {
-    res.send(`<h1>Hi from app! method - ${req.method}, url - ${req.path}</h1>`)
-});
-app.get('*', (req, res) => {
-    res.send(`<h1>404! method - ${req.method}, url - ${req.path}</h1>`)
-});
-
+app.get('/',
+    (req, res, next) => {
+        req.test = 10;
+        console.log(`res.send('1')`);
+        next();
+    },
+    (req, res, next) => {
+        req.test +=5
+        console.log(`res.send('2')`);
+        next();
+    },
+    (req, res) => {
+        res.send('hi, req.test = '+req.test);
+    }
+);
+//patern: change de responsability
 //app.post()
 //app.put()
 //app.delete()
