@@ -1,5 +1,6 @@
 const express = require('express');
-const yup = require('yup');
+const {validade} =require('./middlewares/validade/mw')
+//const yup = require('yup') in middleware now
 // Створення сервера
 const app = express();
 const PORT = 3000;
@@ -7,7 +8,7 @@ const PORT = 3000;
 const users = [];
 app.use(express.json());
 
-// Валідація за допомогою yup
+/* Валідація за допомогою yup !!! in middleware now !!!
 const validate = async (req, res, next) => {
     console.log(typeof req.body); // Перевірка типу даних тіла запиту
     const validationSchemaUser = yup.object({
@@ -25,7 +26,7 @@ const validate = async (req, res, next) => {
         res.status(400).send(error.errors.join(', '));
     }
 };
-
+*/
 // Створення користувача  
 let count = 0;  
 const create = (req, res) => {
